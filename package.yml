@@ -1,0 +1,18 @@
+package: community.lazycat.app.blocky
+name: Blocky
+version: 0.35.0
+description: "Fast and lightweight DNS proxy / ad-blocker for local networks, with DoH/DoT upstreams, block lists and a Web UI."
+min_os_version: "1.5.0"
+homepage: https://github.com/0xERR0R/blocky
+author: 0xERR0R
+license: Apache-2.0
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: Blocky
+    description: "快速轻量的本地 DNS 代理/广告拦截器：支持 DoH/DoT 上游、拦截列表与 Web 管理界面。"
+  en:
+    name: Blocky
+    description: "Fast and lightweight DNS proxy / ad-blocker for local networks, with DoH/DoT upstreams, block lists and a Web UI."

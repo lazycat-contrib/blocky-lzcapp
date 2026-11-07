@@ -1,0 +1,46 @@
+application:
+  subdomain: blocky
+  multi_instance: false
+  # Blocky 的 Web UI / API 官方不提供任何账号或鉴权选项，因此
+  # 不加 public_path，由平台入口鉴权作为第一道防线。
+  upstreams:
+    - location: /package-licenses/
+      backend: file:///lzcapp/pkg/content/licenses/
+    - location: /
+      backend: http://blocky:4000/
+  ingress:
+    - protocol: tcp
+      port: 53
+      service: blocky
+    - protocol: udp
+      port: 53
+      service: blocky
+services:
+  blocky:
+    # upstream: spx01/blocky:0.35.0
+    image: docker.1ms.run/spx01/blocky:0.35.0
+    # Idempotent bootstrap: seed the default config on first boot, then exec
+    # the real server (dashy precedent).
+    command: >-
+      /bin/sh -c "if [ ! -s /app/config/config.yml ]; then cp /lzcapp/pkg/content/config.yml /app/config/config.yml; fi; exec /app/blocky --config /app/config/config.yml"
+    environment:
+      - TZ=Asia/Shanghai
+    binds:
+      - /lzcapp/var/config:/app/config
+usage: |
+  Blocky 是一个快速、轻量的 DNS 代理与广告拦截器，适合作为局域网设备的
+  统一 DNS 入口：支持 DoH / DoT / DNS-over-QUIC 上游、自定义解析、
+  黑白名单拦截与查询统计 Web 界面。
+
+  使用方法：
+  1. 打开应用进入 Web UI（查询统计、缓存状态、配置 Reload 等）。
+     Blocky 自身不带账号鉴权，本包不加 public_path，统一走平台入口鉴权。
+  2. DNS 服务监听容器 53 端口（TCP + UDP，平台已开 ingress），
+     客户端把 DNS 服务器指向本机地址即可使用。
+  3. 默认配置在 /lzcapp/var/config/config.yml（首次启动自动从包内模板
+     复制），可编辑后重启应用生效；上游 DNS、拦截列表等均在该文件配置。
+  4. 广告拦截默认未启用，启用方法见配置文件内注释（列表启动时会联网下载）。
+
+  说明：
+  - 本包未做实机验证，功能以官方文档为准：https://0xerr0r.github.io/blocky/
+  - 许可证 Apache-2.0，随包分发，见 /package-licenses/。
