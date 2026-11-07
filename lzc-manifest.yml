@@ -17,8 +17,8 @@ application:
       service: blocky
 services:
   blocky:
-    # upstream: spx01/blocky:0.35.0
-    image: docker.1ms.run/spx01/blocky:0.35.0
+    # upstream: spx01/blocky:v0.35.0
+    image: docker.1ms.run/spx01/blocky:v0.35.0
     # Idempotent bootstrap: seed the default config on first boot, then exec
     # the real server (dashy precedent).
     command: >-
